@@ -1,1 +1,100 @@
 RNAseq analysis with R and DESeq2
+
+Importing and preprocessing data 
+
+#preprocessing data
+TBD
+
+From here on copy paste into Rstudio:
+setwd('insert path to txt file')
+
+#import data
+countdata <- read.table("insert name of txt file", header=TRUE, row.names=1)
+
+# Convert to matrix
+countdata <- as.matrix(countdata)
+
+# Assign condition (first three are LeafI, second three are LeafII, third three are LeafIII, fourth three are LeafIV and last three are LeafM)
+(condition <- factor(c(rep("LeafI", 3), rep("LeafII", 3), rep("LeafIII", 3), rep("LeafIV", 3), rep("LeafII", 3))))
+
+# Analysis with DESeq2
+
+library(DESeq2)
+
+(coldata <- data.frame(row.names=colnames(countdata), condition))
+
+dds <- DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design=~condition)
+
+dds <- DESeq(dds)
+
+# rlog transformation
+rld = rlogTransformation(dds)
+
+# building the results table
+res <- results(dds)
+mcols(res, use.names=TRUE)
+summary(res)
+
+# MA plot 
+plotMA(res, ylim=c(-7,7))
+# Red points have adjusted p value < 0.1.
+
+# We also see that there is a lot of noise associated with log2 fold changes from low count genes. DESeq2 can produce shrunken log2 fold changes to reduce the noice.
+resShrink = lfcShrink(dds, coef=2)
+plotMA(resShrink, ylim=c(-5,5))
+
+#Access the values of a specific transcript
+assay(rld)["transcript_id",]
+
+# Heatmap 
+library("pheatmap")
+mat = assay(rld)[ head(order(res$padj),30), ] # select the top 30 genes with the lowest padj
+mat = mat - rowMeans(mat) # Subtract the row means from each value
+# Optional, but to make the plot nicer:
+df = as.data.frame(colData(rld)[,c("condition")]) # Create a dataframe with a column of the conditions
+colnames(df) = "condition" # Rename the column header
+rownames(df) = colnames(mat) # add rownames
+# and plot the actual heatmap
+pheatmap(mat, annotation_col=df)
+
+OPTIONAL: Filtering the results 
+
+1. Extract only the significant genes (padj < 0.1) from res
+resSig <- subset(res, padj < 0.1)
+resSig
+
+2. Show the 10 most strongest up-regulated based on fold change. And plot the top gene.
+head(resShrink[ order(resShrink$log2FoldChange), ], 10)
+plotCounts(dds, "insert strongest up-regulated transcript", "condition")
+
+3. And the 10 most down-regulated 
+head(resShrink[ order(resShrink$log2FoldChange, decreasing=TRUE), ], 10)
+plotCounts(dds, " ", "condition")
+
+4. Show the most highly significantly expressed transcripts (ordered by adjusted p-value and print top 5). And (again) plot the top gene.
+head(res[order(res$padj),], 5)
+plotCounts(dds, " ", "condition")
+
+5. If there were a few thousand DE genes. This is perhaps too much? And from the MA-plot we see that when genes are highly expressed they are called DE even when the fold change is really small. It is possible to filter the results based on fold change. In this case, genes with a fold change of 2 (or -2) 
+resLFC1 = results(dds, lfcThreshold = 1)
+summary(resLFC1)
+
+plotMA(resLFC1, ylim=c(-7,7)) +
+abline(h = 1, col = "blue") +
+abline(h = -1, col = "blue")
+
+resLFC1Srhunk = lfcShrink(dds, coef=2, res=resLFC1)
+plotMA(resLFC1Srhunk, ylim=c(-5,5))+
+abline(h = 1, col = "blue") +
+abline(h = -1, col = "blue")
+
+6. We can also change the p.adjusted cutoff to more strict than the default (0.1) by changing the alpha (equivalent to FDR)
+res.05 <- results(dds, alpha=.05)
+table(res.05$padj < .05)
+summary(res.05)
+
+res.05Shrunk = lfcShrink(dds, coef = 2, res=res.05)
+plotMA(res.05Shrunk, alpha = 0.05, ylim=c(-5,5)) +
+abline(h = 1, col = "blue") +
+abline(h = -1, col = "blue")
+
