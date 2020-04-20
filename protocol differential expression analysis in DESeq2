@@ -12,6 +12,16 @@ Note
 From here on copy paste into Rstudio:
 setwd('insert path to txt file')
 
+#install packages. 
+install.packages("pheatmap")
+install.packages("reshape2")
+install.packages("gplots")
+install.packages("RColorBrewer")
+install.packages("ggplot2")
+
+#start DESeq2
+library(DESeq2)
+
 #import data
 countdata <- read.table("insert name of txt file", header=TRUE, row.names=1)
 
@@ -23,7 +33,6 @@ countdata <- as.matrix(countdata)
 
 # Analysis with DESeq2
 
-library(DESeq2)
 
 (coldata <- data.frame(row.names=colnames(countdata), condition))
 
