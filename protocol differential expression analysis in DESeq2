@@ -2,8 +2,12 @@ RNAseq analysis with R and DESeq2
 
 Importing and preprocessing data 
 
-#preprocessing data
-TBD
+#excel format
+see excel file 
+
+Note
+- Make sure there's no spaces in the headers etc (for example Leaf I should be Leaf_I)
+- Instead of transcript names there should be protein names 
 
 From here on copy paste into Rstudio:
 setwd('insert path to txt file')
@@ -43,8 +47,8 @@ plotMA(res, ylim=c(-7,7))
 resShrink = lfcShrink(dds, coef=2)
 plotMA(resShrink, ylim=c(-5,5))
 
-#Access the values of a specific transcript
-assay(rld)["transcript_id",]
+#Show the most highly significantly expressed transcripts (ordered by adjusted p-value and print top 5).
+head(res[order(res$padj),], 5)
 
 # Heatmap 
 library("pheatmap")
@@ -71,9 +75,8 @@ plotCounts(dds, "insert strongest up-regulated transcript", "condition")
 head(resShrink[ order(resShrink$log2FoldChange, decreasing=TRUE), ], 10)
 plotCounts(dds, " ", "condition")
 
-4. Show the most highly significantly expressed transcripts (ordered by adjusted p-value and print top 5). And (again) plot the top gene.
-head(res[order(res$padj),], 5)
-plotCounts(dds, " ", "condition")
+4.  Access the values of a specific transcript
+assay(rld)["protein_name",]
 
 5. If there were a few thousand DE genes. This is perhaps too much? And from the MA-plot we see that when genes are highly expressed they are called DE even when the fold change is really small. It is possible to filter the results based on fold change. In this case, genes with a fold change of 2 (or -2) 
 resLFC1 = results(dds, lfcThreshold = 1)
