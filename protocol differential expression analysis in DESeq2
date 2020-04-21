@@ -10,7 +10,11 @@ Note
 - Instead of transcript names there should be protein names 
 
 From here on copy paste into Rstudio:
+#to make sure you're working in the right folder, set your directory with the following command:
 setwd('insert path to txt file')
+
+#you can also check your directory with the following command:
+getwd()
 
 #install packages. 
 install.packages("pheatmap")
