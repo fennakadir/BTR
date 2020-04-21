@@ -60,8 +60,9 @@ plotMA(res, ylim=c(-7,7))
 resShrink = lfcShrink(dds, coef=2)
 plotMA(resShrink, ylim=c(-5,5))
 
-#Show the most highly significantly expressed transcripts (ordered by adjusted p-value and print top 5).
-head(res[order(res$padj),], 5)
+#Save the most highly significantly expressed transcripts and view them (ordered by adjusted p-value and print top 100).
+x <- head(res[order(res$padj),], 100)
+View(x)
 
 # Heatmap 
 library("pheatmap")
