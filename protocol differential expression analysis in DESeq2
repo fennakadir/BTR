@@ -33,7 +33,7 @@ countdata <- read.table("insert name of txt file", header=TRUE, row.names=1)
 countdata <- as.matrix(countdata)
 
 # Assign condition (first three are LeafI, second three are LeafII, third three are LeafIII, fourth three are LeafIV and last three are LeafM)
-(condition <- factor(c(rep("LeafI", 3), rep("LeafII", 3), rep("LeafIII", 3), rep("LeafIV", 3), rep("LeafII", 3))))
+(condition <- factor(c(rep("Leaf_I", 3), rep("Leaf_II", 3), rep("Leaf_III", 3), rep("Leaf_IV", 3), rep("Leaf_M", 3))))
 
 # Analysis with DESeq2
 
