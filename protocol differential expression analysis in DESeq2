@@ -47,14 +47,14 @@ dds <- DESeq(dds)
 # rlog transformation
 rld = rlogTransformation(dds)
 
-# building the results table
-res <- results(dds)
+# building the results table with p < 0.05
+res <- results(dds, alpha=.05)
 mcols(res, use.names=TRUE)
 summary(res)
 
 # MA plot 
 plotMA(res, ylim=c(-7,7))
-# Red points have adjusted p value < 0.1.
+# Red points have adjusted p value < 0.05.
 
 # We also see that there is a lot of noise associated with log2 fold changes from low count genes. DESeq2 can produce shrunken log2 fold changes to reduce the noice.
 resShrink = lfcShrink(dds, coef=2)
