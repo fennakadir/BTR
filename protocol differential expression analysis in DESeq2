@@ -60,7 +60,7 @@ plotMA(res, ylim=c(-7,7))
 resShrink = lfcShrink(dds, coef=2)
 plotMA(resShrink, ylim=c(-5,5))
 
-#Save the most highly significantly expressed transcripts and view them (ordered by adjusted p-value and print top 100).
+#Save the most highly significant differentially expressed transcripts and view them (ordered by adjusted p-value and print top 100).
 x <- head(res[order(res$padj),], 1000)
 View(x)
 
