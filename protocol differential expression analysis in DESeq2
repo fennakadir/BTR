@@ -42,7 +42,7 @@ countdata <- as.matrix(countdata)
 
 dds <- DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design=~condition)
 
-dds <- DESeq(dds)
+dds <- DESeq(dds, test="LRT", reduced = ~ 1)
 
 # rlog transformation
 rld = rlogTransformation(dds)
