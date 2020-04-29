@@ -37,19 +37,17 @@ countdata <- as.matrix(countdata)
 (condition <- factor(c(rep("Leaf_I", 3), rep("Leaf_II", 3), rep("Leaf_III", 3), rep("Leaf_IV", 3), rep("Leaf_M", 3))))
 
 # Analysis with DESeq2
-
-
 (coldata <- data.frame(row.names=colnames(countdata), condition))
 
 dds <- DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design=~condition)
 
-dds <- DESeq(dds, test="LRT", reduced = ~ 1)
+dds <- DESeq(dds)
 
 # rlog transformation
 rld = rlogTransformation(dds)
 
-# building the results table with p < 0.05
-res <- results(dds, alpha=.05)
+# building the results table with alpha(FDR) = 0.05
+res <- results(dds)
 mcols(res, use.names=TRUE)
 summary(res)
 
