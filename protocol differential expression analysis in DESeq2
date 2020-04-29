@@ -46,7 +46,7 @@ dds <- DESeq(dds)
 # rlog transformation
 rld = rlogTransformation(dds)
 
-# building the results table with alpha(FDR) = 0.05
+# building the results table with alpha(FDR) = 0.1
 res <- results(dds)
 mcols(res, use.names=TRUE)
 summary(res)
@@ -66,6 +66,13 @@ View(x)
 #save the differentially expressed genes as a txt file 
 write.table(x, file="name.txt", "path", sep="\t")
 
+#labels_row
+#row_labels.txt should be the list of protein names in the same order as the table of differentially expressed transcript aka x (ordered by padj)
+# Read in the data
+y <- scan("row_labels.txt", what="", sep="\n")
+# Separate elements by one or more whitepace
+row_labels <- strsplit(x, "[[:space:]]+")
+
 # Heatmap 
 library("pheatmap")
 mat = assay(rld)[ head(order(res$padj),30), ] # select the top 30 genes with the lowest padj
@@ -75,7 +82,11 @@ df = as.data.frame(colData(rld)[,c("condition")]) # Create a dataframe with a co
 colnames(df) = "condition" # Rename the column header
 rownames(df) = colnames(mat) # add rownames
 # and plot the actual heatmap
-pheatmap(mat, annotation_col=df, fontsize_row=1, main="title graph", filename="name.pdf")
+pheatmap(mat, annotation_col=df, fontsize_row=1, main="title graph", filename="name.pdf", labels_row = row_labels)
+
+
+
+
 
 OPTIONAL: Filtering the results 
 
@@ -113,7 +124,7 @@ table(res.05$padj < .05)
 summary(res.05)
 
 res.05Shrunk = lfcShrink(dds, coef = 2, res=res.05)
-plotMA(res.05Shrunk, alpha = 0.05, ylim=c(-5,5)) +
+plotMA(res.05Shrunk, ylim=c(-5,5)) +
 abline(h = 1, col = "blue") +
 abline(h = -1, col = "blue")
 
