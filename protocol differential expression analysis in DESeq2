@@ -22,6 +22,7 @@ install.packages("reshape2")
 install.packages("gplots")
 install.packages("RColorBrewer")
 install.packages("ggplot2")
+install.packages("dendextend")
 
 #start DESeq2
 library(DESeq2)
@@ -65,7 +66,7 @@ x <- head(res[order(res$padj),], 1000)
 View(x)
 
 #save the differentially expressed genes as a txt file 
-write.table(x, "path", sep="\t")
+write.table(x, file="name.txt", "path", sep="\t")
 
 # Heatmap 
 library("pheatmap")
@@ -117,4 +118,10 @@ res.05Shrunk = lfcShrink(dds, coef = 2, res=res.05)
 plotMA(res.05Shrunk, alpha = 0.05, ylim=c(-5,5)) +
 abline(h = 1, col = "blue") +
 abline(h = -1, col = "blue")
+
+7. Hierarchical clustering diagram 
+library(dendextend)
+my_hclust_gene <- hclust(dist(countdata), method = "complete")
+as.dendrogram(my_hclust_gene) %>%
+  plot(horiz = TRUE)
 
