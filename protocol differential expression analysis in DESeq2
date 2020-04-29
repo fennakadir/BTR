@@ -75,7 +75,7 @@ df = as.data.frame(colData(rld)[,c("condition")]) # Create a dataframe with a co
 colnames(df) = "condition" # Rename the column header
 rownames(df) = colnames(mat) # add rownames
 # and plot the actual heatmap
-pheatmap(mat, annotation_col=df)
+pheatmap(mat, annotation_col=df, fontsize_row=1, main="title graph", filename="name.pdf")
 
 OPTIONAL: Filtering the results 
 
