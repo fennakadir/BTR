@@ -61,7 +61,6 @@ plotMA(resShrink, ylim=c(-5,5))
 
 #Save the most highly significant differentially expressed transcripts and view them (ordered by adjusted p-value and print top 100).
 x <- head(res[order(res$padj),], 1000)
-View(x)
 
 #save the differentially expressed genes as a txt file 
 write.table(x, file="name.txt", "path", sep="\t")
@@ -71,7 +70,7 @@ write.table(x, file="name.txt", "path", sep="\t")
 # Read in the data
 y <- scan("row_labels.txt", what="", sep="\n")
 # Separate elements by one or more whitepace
-row_labels <- strsplit(x, "[[:space:]]+")
+row_labels <- strsplit(y, "[[:space:]]+")
 
 # Heatmap 
 library("pheatmap")
